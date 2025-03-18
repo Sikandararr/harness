@@ -1,1 +1,9 @@
-
+pip
+telebot
+pytz
+flask
+aiogram
+pymongo
+pyTelegramBotAPI
+python-telegram-bot
+motor
