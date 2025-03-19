@@ -1,0 +1,14 @@
+inputSet:
+  name: Build_Sikandararr_harness_1742382262734-push-trigger-input-set
+  identifier: Build_Sikandararr_harness_1742382262734pushtriggerinputset
+  orgIdentifier: default
+  projectIdentifier: default_project
+  pipeline:
+    identifier: Build_Sikandararr_harness_1742382262734
+    properties:
+      ci:
+        codebase:
+          build:
+            type: branch
+            spec:
+              branch: <+trigger.branch>
