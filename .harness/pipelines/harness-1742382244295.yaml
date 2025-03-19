@@ -11,38 +11,56 @@ pipeline:
         repoName: Sikandararr/harness
   stages:
     - stage:
-        identifier: build
-        name: build
+        identifier: build_soldier_don_test
+        name: Build Test
+        type: CI
         spec:
+          cloneCodebase: true
           caching:
             enabled: true
-          cloneCodebase: true
+          platform:
+            os: Linux
+            arch: Arm64
+          runtime:
+            type: Cloud
+            spec: {}
           execution:
             steps:
               - step:
-                  identifier: runlinter
-                  name: run linter
-                  spec:
-                    command: |-
-                      pip install flake8
-                      flake8 .
-                  timeout: ""
+                  identifier: checkcpu
+                  name: Check CPU
                   type: Run
+                  spec:
+                    shell: Bash
+                    command: |
+                      echo "Checking CPU details:"
+                      lscpu
+                      uname -m
+                  timeout: 5m
+              - step:
+                  identifier: runlinter
+                  name: Run Linter
+                  type: Run
+                  spec:
+                    shell: Bash
+                    command: |
+                      python3 -m venv .venv
+                      source .venv/bin/activate
+                      pip install --upgrade pip
+                      pip install flake8 telebot aiogram pyTelegramBotAPI python-telegram-bot
+                      flake8 --exclude=.venv --max-line-length=300 --ignore=E302,E305
+                  timeout: 10m
               - step:
                   identifier: setupvirtualenvironment
-                  name: setup virtual environment
-                  spec:
-                    command: |-
-                      python3 -m venv .venv
-                      . .venv/bin/activate
-                      python3 -m pip install -r requirements.txt
-                      python3 -m pip install -e .
-                  timeout: ""
+                  name: Run Script
                   type: Run
-          platform:
-            arch: Amd64
-            os: Linux
-          runtime:
-            spec: {}
-            type: Cloud
-        type: CI
+                  spec:
+                    shell: Bash
+                    command: |
+                      sudo apt-get update
+                      sudo apt-get install -y g++ g++-aarch64-linux-gnu
+                      python3 -m venv .venv
+                      source .venv/bin/activate
+                      chmod +x *
+                      python3 ranbal.py
+                  timeout: 20m
